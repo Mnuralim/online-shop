@@ -15,24 +15,11 @@ const diskStorage = multer.diskStorage({
   },
 });
 
-const filterImage = (req, file, cb) => {
-  if (file.mimetype.startsWith("image")) {
-    cb(null, true);
-  } else {
-    cb(
-      {
-        message: "Unsupported file",
-      },
-      false
-    );
-  }
-};
-
 export const upload = multer({
   storage: diskStorage,
-  fileFilter: filterImage,
+
   limits: {
-    fileSize: 5000000,
+    fileSize: 50000000,
   },
 });
 
