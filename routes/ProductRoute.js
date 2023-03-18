@@ -2,7 +2,6 @@ import express from "express";
 import { addToWishlist, createProduct, deleteProduct, getAllProducts, getProduct, rating, updateProduct, uploadImages } from "../controllers/Product.js";
 import { adminOnly, authMidleware } from "../middleware/AuthMidleware.js";
 import { productImageResizer, upload } from "../middleware/uploadImages.js";
-import fs from "fs";
 
 const router = express.Router();
 
