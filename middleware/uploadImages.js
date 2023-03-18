@@ -7,7 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const diskStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../public/images"));
+    cb(null, "./public/images");
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -17,7 +17,6 @@ const diskStorage = multer.diskStorage({
 
 export const upload = multer({
   storage: diskStorage,
-
   limits: {
     fileSize: 50000000,
   },
