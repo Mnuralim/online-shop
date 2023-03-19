@@ -344,26 +344,26 @@ export const addAddress = async (req, res) => {
 export const addToCart = async (req, res) => {
   const { id } = req.user;
   const { cart } = req.body;
-
+  console.log(id);
   try {
     const products = [];
 
     const user = await User.findById(id);
-    const alreadyAdd = await Cart.findOne({ orderby: user.id });
+    const alreadyAdd = await Cart.findOne({ orderby: id });
     console.log(alreadyAdd);
     if (alreadyAdd) {
-      await Cart.findOneAndRemove({ orderby: user.id });
-    } else {
-      for (let i = 0; i < cart.length; i++) {
-        let object = {};
-        object.product = cart[i].id;
-        object.count = cart[i].count;
-        object.color = cart[i].color;
-        let getPrice = await Product.findById(cart[i].id).select("price").exec();
-        object.price = getPrice.price;
-        products.push(object);
-      }
+      alreadyAdd.remove();
     }
+    for (let i = 0; i < cart.length; i++) {
+      let object = {};
+      object.product = cart[i].id;
+      object.count = cart[i].count;
+      object.color = cart[i].color;
+      let getPrice = await Product.findById(cart[i].id).select("price").exec();
+      object.price = getPrice.price;
+      products.push(object);
+    }
+
     let cartTotal = 0;
     for (let i = 0; i < products.length; i++) {
       cartTotal = cartTotal + products[i].count * products[i].price;
