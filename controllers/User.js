@@ -350,7 +350,6 @@ export const addToCart = async (req, res) => {
 
     const user = await User.findById(id);
     const alreadyAdd = await Cart.findOne({ orderby: id });
-    console.log(alreadyAdd);
     if (alreadyAdd) {
       alreadyAdd.remove();
     }
@@ -360,6 +359,9 @@ export const addToCart = async (req, res) => {
       object.count = cart[i].count;
       object.color = cart[i].color;
       let getPrice = await Product.findById(cart[i].id).select("price").exec();
+      let getImages = await Product.findById(cart[i].id).select("images").exec();
+
+      object.images = getImages.images[0].url;
       object.price = getPrice.price;
       products.push(object);
     }
