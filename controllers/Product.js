@@ -15,7 +15,7 @@ cloudinary.config({
 });
 
 export const createProduct = async (req, res) => {
-  const { title, description, price, category, brand, quantity, color } = req.body;
+  // const { title, description, price, category, brand, quantity, color } = req.body;
   const { images } = req.body;
 
   // const urls = [];
@@ -33,15 +33,16 @@ export const createProduct = async (req, res) => {
       url: result.secure_url,
     };
     const data = await Product.create({
-      title: title,
-      slug: slugify(title),
-      description: description,
-      price: price,
-      category: category,
-      brand: brand,
-      quantity: quantity,
-      color: color,
-      images: req.body.images,
+      ...req.body,
+      // title: title,
+      // slug: slugify(title),
+      // description: description,
+      // price: price,
+      // category: category,
+      // brand: brand,
+      // quantity: quantity,
+      // color: color,
+      // images: req.body.images,
       // images: urls.map((url) => {
       //   return { url };
       // }),
