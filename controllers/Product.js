@@ -15,7 +15,8 @@ cloudinary.config({
 });
 
 export const createProduct = async (req, res) => {
-  const { title, description, price, category, brand, quantity, color, images } = req.body;
+  const { title, description, price, category, brand, quantity, color } = req.body;
+  const { images } = req.body;
 
   // const urls = [];
   // const files = req.files;
@@ -28,6 +29,9 @@ export const createProduct = async (req, res) => {
     const result = await cloudinary.v2.uploader.upload(images, {
       folder: "coba",
     });
+    req.body.images = {
+      url: result.secure_url,
+    };
     const data = await Product.create({
       title: title,
       slug: slugify(title),
@@ -37,9 +41,7 @@ export const createProduct = async (req, res) => {
       brand: brand,
       quantity: quantity,
       color: color,
-      images: {
-        url: result.url,
-      },
+      images: req.body.images,
       // images: urls.map((url) => {
       //   return { url };
       // }),
