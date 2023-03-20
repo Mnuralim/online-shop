@@ -1,13 +1,10 @@
 import Product from "../models/ProductModel.js";
 import slugify from "slugify";
 import User from "../models/UserModel.js";
-import { cloudinaryUploadImage } from "../utils/cloudinary.js";
-import fs from "fs";
 
 export const createProduct = async (req, res) => {
   const { title, description, price, category, brand, quantity, color } = req.body;
-  console.log(req.files);
-  console.log(title);
+
   const urls = [];
   const files = req.files;
   for (const file of files) {
@@ -106,13 +103,39 @@ export const getAllProducts = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   const { id } = req.params;
-  if (req.body.title) {
-    req.body.slug = slugify(req.body.title);
+  const { title, description, price, category, brand, quantity, color } = req.body;
+  const urls = [];
+  const files = req.files;
+  for (const file of files) {
+    const newPath = file.path;
+    urls.push(newPath);
   }
+
+  let slug;
+  if (title) {
+    slug = slugify(title);
+  }
+
   try {
-    const data = await Product.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const data = await Product.findByIdAndUpdate(
+      id,
+      {
+        title: title,
+        slug: slug,
+        description: description,
+        price: price,
+        category: category,
+        brand: brand,
+        quantity: quantity,
+        color: color,
+        images: urls.map((url) => {
+          return { url };
+        }),
+      },
+      {
+        new: true,
+      }
+    );
     res.status(200).json({
       msg: "success updated",
       data: data,
@@ -233,30 +256,30 @@ export const rating = async (req, res) => {
   }
 };
 
-export const uploadImages = async (req, res) => {
-  const { id } = req.params;
+// export const uploadImages = async (req, res) => {
+//   const { id } = req.params;
 
-  try {
-    const urls = [];
-    const files = req.files;
-    for (const file of files) {
-      const newPath = file.path;
-      urls.push(newPath);
-    }
+//   try {
+//     const urls = [];
+//     const files = req.files;
+//     for (const file of files) {
+//       const newPath = file.path;
+//       urls.push(newPath);
+//     }
 
-    const addImages = await Product.findByIdAndUpdate(
-      id,
-      {
-        images: urls.map((url) => {
-          return { url };
-        }),
-      },
-      {
-        new: true,
-      }
-    );
-    res.json(addImages);
-  } catch (error) {
-    res.status(500).json({ msg: error.message });
-  }
-};
+//     const addImages = await Product.findByIdAndUpdate(
+//       id,
+//       {
+//         images: urls.map((url) => {
+//           return { url };
+//         }),
+//       },
+//       {
+//         new: true,
+//       }
+//     );
+//     res.json(addImages);
+//   } catch (error) {
+//     res.status(500).json({ msg: error.message });
+//   }
+// };
