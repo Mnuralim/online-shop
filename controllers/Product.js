@@ -5,7 +5,7 @@ import { cloudinaryUploadImage } from "../utils/cloudinary.js";
 import fs from "fs";
 
 export const createProduct = async (req, res) => {
-  const { title, slug, description, price, category, brand, quantity, color } = req.body;
+  const { title, description, price, category, brand, quantity, color } = req.body;
 
   try {
     const data = await Product.create({
@@ -224,31 +224,27 @@ export const rating = async (req, res) => {
 
 export const uploadImages = async (req, res) => {
   const { id } = req.params;
-  console.log(req.files);
 
   try {
-    const uploader = (path) => cloudinaryUploadImage(path, "images");
     const urls = [];
     const files = req.files;
     for (const file of files) {
-      const path = file.path;
-      const newPath = await uploader(path);
+      const newPath = file.path;
       urls.push(newPath);
-      fs.unlinkSync(path);
     }
 
-    const findProduct = await Product.findByIdAndUpdate(
+    const addImages = await Product.findByIdAndUpdate(
       id,
       {
         images: urls.map((url) => {
-          return url;
+          return { url };
         }),
       },
       {
         new: true,
       }
     );
-    res.json(findProduct);
+    res.json(addImages);
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }

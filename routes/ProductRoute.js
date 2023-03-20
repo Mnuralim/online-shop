@@ -1,7 +1,7 @@
 import express from "express";
 import { addToWishlist, createProduct, deleteProduct, getAllProducts, getProduct, rating, updateProduct, uploadImages } from "../controllers/Product.js";
 import { adminOnly, authMidleware } from "../middleware/AuthMidleware.js";
-import { productImageResizer, upload } from "../middleware/uploadImages.js";
+import { upload } from "../middleware/uploadImages.js";
 
 const router = express.Router();
 
@@ -15,6 +15,6 @@ router.put("/add-wishlist", authMidleware, addToWishlist);
 
 router.put("/ratings", authMidleware, rating);
 
-router.put("/upload-images/:id", authMidleware, adminOnly, upload.array("images", 10), productImageResizer, uploadImages);
+router.put("/upload-images/:id", authMidleware, adminOnly, upload.array("images", 10), uploadImages);
 
 export default router;
