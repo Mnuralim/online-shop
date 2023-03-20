@@ -28,6 +28,7 @@ export const createProduct = async (req, res) => {
   try {
     const result = await cloudinary.v2.uploader.upload(images, {
       folder: "coba",
+      width: 300,
     });
     req.body.images = {
       url: result.secure_url,
