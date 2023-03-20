@@ -6,6 +6,14 @@ import fs from "fs";
 
 export const createProduct = async (req, res) => {
   const { title, description, price, category, brand, quantity, color } = req.body;
+  console.log(req.files);
+  console.log(title);
+  const urls = [];
+  const files = req.files;
+  for (const file of files) {
+    const newPath = file.path;
+    urls.push(newPath);
+  }
 
   try {
     const data = await Product.create({
@@ -17,6 +25,9 @@ export const createProduct = async (req, res) => {
       brand: brand,
       quantity: quantity,
       color: color,
+      images: urls.map((url) => {
+        return { url };
+      }),
     });
     res.status(200).json({
       msg: "Success",
