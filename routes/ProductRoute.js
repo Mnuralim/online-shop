@@ -5,7 +5,8 @@ import { upload } from "../middleware/uploadImages.js";
 
 const router = express.Router();
 
-router.post("/create-product", upload.array("images", 10), createProduct);
+// router.post("/create-product", authMidleware, adminOnly, upload.array("images", 10), createProduct);
+router.post("/create-product", authMidleware, adminOnly, createProduct);
 router.get("/get-product/:id", getProduct);
 router.get("/get-all-products/", getAllProducts);
 router.put("/update-product/:id", authMidleware, adminOnly, upload.array("images", 10), updateProduct);

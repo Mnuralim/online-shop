@@ -2,17 +2,32 @@ import Product from "../models/ProductModel.js";
 import slugify from "slugify";
 import User from "../models/UserModel.js";
 
-export const createProduct = async (req, res) => {
-  const { title, description, price, category, brand, quantity, color } = req.body;
+import cloudinary from "cloudinary";
 
-  const urls = [];
-  const files = req.files;
-  for (const file of files) {
-    const newPath = file.path;
-    urls.push(newPath);
-  }
+import dotenv from "dotenv";
+
+dotenv.config();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
+
+export const createProduct = async (req, res) => {
+  const { title, description, price, category, brand, quantity, color, images } = req.body;
+
+  // const urls = [];
+  // const files = req.files;
+  // for (const file of files) {
+  //   const newPath = file.path;
+  //   urls.push(newPath);
+  // }
 
   try {
+    const result = await cloudinary.v2.uploader.upload(images, {
+      folder: "coba",
+    });
     const data = await Product.create({
       title: title,
       slug: slugify(title),
@@ -22,9 +37,12 @@ export const createProduct = async (req, res) => {
       brand: brand,
       quantity: quantity,
       color: color,
-      images: urls.map((url) => {
-        return { url };
-      }),
+      images: {
+        url: result.url,
+      },
+      // images: urls.map((url) => {
+      //   return { url };
+      // }),
     });
     res.status(200).json({
       msg: "Success",
