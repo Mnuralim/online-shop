@@ -124,35 +124,44 @@ export const getAllProducts = async (req, res) => {
 };
 
 export const updateProduct = async (req, res) => {
-  const { id } = req.params;
-  const { title, description, price, category, brand, quantity, color } = req.body;
-  const urls = [];
-  const files = req.files;
-  for (const file of files) {
-    const newPath = file.path;
-    urls.push(newPath);
-  }
+  // const { id } = req.params;
+  // const { title, description, price, category, brand, quantity, color } = req.body;
+  // const urls = [];
+  // const files = req.files;
+  // for (const file of files) {
+  //   const newPath = file.path;
+  //   urls.push(newPath);
+  // }
+  const { images } = req.body;
 
-  let slug;
-  if (title) {
-    slug = slugify(title);
-  }
+  // let slug;
+  // if (title) {
+  //   slug = slugify(title);
+  // }
 
   try {
+    const result = await cloudinary.v2.uploader.upload(images, {
+      folder: "coba",
+      width: 300,
+    });
+    req.body.images = {
+      url: result.secure_url,
+    };
     const data = await Product.findByIdAndUpdate(
       id,
       {
-        title: title,
-        slug: slug,
-        description: description,
-        price: price,
-        category: category,
-        brand: brand,
-        quantity: quantity,
-        color: color,
-        images: urls.map((url) => {
-          return { url };
-        }),
+        ...req.body,
+        // title: title,
+        // slug: slug,
+        // description: description,
+        // price: price,
+        // category: category,
+        // brand: brand,
+        // quantity: quantity,
+        // color: color,
+        // images: urls.map((url) => {
+        //   return { url };
+        // }),
       },
       {
         new: true,
